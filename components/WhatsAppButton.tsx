@@ -36,11 +36,11 @@ const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
     return (
       <button
         onClick={handleClick}
-        className="fixed bottom-6 left-6 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-transform duration-200 hover:scale-110 active:scale-95 flex items-center gap-2 animate-bounce-slow"
+        className="fixed bottom-24 left-6 md:bottom-28 md:left-8 z-50 bg-green-500 hover:bg-green-600 text-white p-4 rounded-full shadow-lg transition-transform duration-200 hover:scale-110 active:scale-95 flex items-center gap-2 animate-bounce-slow"
         aria-label="Chat on WhatsApp"
       >
         <MessageCircle size={28} fill="white" />
-        <span className="font-bold hidden md:inline">Chat With Coach</span>
+        <span className="font-bold hidden md:inline"></span>
       </button>
     );
   }

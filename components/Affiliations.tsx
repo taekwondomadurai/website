@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 
 const Affiliations: React.FC = () => {
@@ -12,12 +13,38 @@ const Affiliations: React.FC = () => {
     { name: "World Taekwondo", code: "WT", url: "http://www.worldtaekwondo.org/", image: "/images/wt.jpg" },
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 0.2
+      }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, scale: 0.8, y: 10 },
+    visible: {
+      opacity: 1,
+      scale: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 260,
+        damping: 20
+      }
+    }
+  };
+
   const renderOrgCard = (org: any, idx: number) => (
-    <a
+    <motion.a
       key={idx}
       href={org.url}
       target={org.url !== '#' ? "_blank" : "_self"}
       rel="noopener noreferrer"
+      variants={itemVariants}
       className={`group flex flex-col items-center w-32 md:w-40 text-center ${org.url === '#' ? 'cursor-default' : 'cursor-pointer'}`}
       onClick={(e) => org.url === '#' && e.preventDefault()}
     >
@@ -34,38 +61,49 @@ const Affiliations: React.FC = () => {
       <span className="text-xs font-bold text-gray-600 uppercase tracking-wider leading-tight group-hover:text-primary transition-colors">
         {org.name}
       </span>
-    </a>
+    </motion.a>
   );
 
   return (
     <div className="mt-16 pt-12 border-t border-gray-100">
 
       {/* Affiliations Section */}
-      <div className="mb-12">
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={containerVariants}
+        className="mb-12"
+      >
         <div className="text-center mb-8">
-          <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-secondary mb-2">
+          <motion.h3 variants={itemVariants} className="text-xl font-heading font-bold uppercase tracking-wide text-secondary mb-2">
             Affiliated To
-          </h3>
+          </motion.h3>
         </div>
         <div className="flex flex-wrap justify-center items-stretch gap-8 md:gap-12">
           {affiliationsList.map((org, idx) => renderOrgCard(org, idx))}
         </div>
-      </div>
+      </motion.div>
 
       {/* Recognitions Section */}
-      <div>
+      <motion.div
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.3 }}
+        variants={containerVariants}
+      >
         <div className="text-center mb-8">
-          <h3 className="text-xl font-heading font-bold uppercase tracking-wide text-secondary mb-2">
+          <motion.h3 variants={itemVariants} className="text-xl font-heading font-bold uppercase tracking-wide text-secondary mb-2">
             Recognized By
-          </h3>
-          <p className="text-sm font-medium text-gray-500 uppercase tracking-widest">
+          </motion.h3>
+          <motion.p variants={itemVariants} className="text-sm font-medium text-gray-500 uppercase tracking-widest">
             Leading Sports Bodies
-          </p>
+          </motion.p>
         </div>
         <div className="flex flex-wrap justify-center items-stretch gap-8 md:gap-12">
           {recognitionsList.map((org, idx) => renderOrgCard(org, idx))}
         </div>
-      </div>
+      </motion.div>
 
     </div>
   );

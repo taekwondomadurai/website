@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageSquare, X, Send, Bot, Loader2, Sparkles, RotateCcw } from 'lucide-react';
+import { motion, useDragControls } from 'framer-motion';
+import { MessageSquare, X, Send, Loader2, Sparkles, RotateCcw } from 'lucide-react';
 import { CONTACT_INFO, PROGRAMS, SCHEDULE, ACHIEVEMENTS, FAQS, COURSES } from '../constants';
 
 interface Message {
@@ -109,32 +110,59 @@ const Chatbot: React.FC = () => {
     }
   };
 
+  const dragControls = useDragControls();
+
   return (
     <>
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed z-50 bottom-24 right-6 md:bottom-28 md:right-8 bg-zinc-900 text-white p-4 rounded-full shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 border-2 border-primary group ${isOpen ? 'rotate-90 opacity-0 pointer-events-none' : 'opacity-100'}`}
+        className={`fixed z-50 bottom-24 right-6 md:bottom-28 md:right-8 transition-all duration-300 hover:scale-110 active:scale-95 group ${isOpen ? 'rotate-90 opacity-0 pointer-events-none' : 'opacity-100'}`}
         aria-label="Open AI Assistant"
       >
-        <Bot size={28} className="text-primary group-hover:text-white transition-colors" />
-        <span className="absolute -top-2 -right-2 flex h-4 w-4">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-4 w-4 bg-primary"></span>
+        <motion.div
+          className="relative w-20 h-20 md:w-24 md:h-24 filter drop-shadow-xl"
+          animate={{ y: [0, -8, 0] }}
+          transition={{
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        >
+          <img
+            src="/images/taekwondo_avatar.png"
+            alt="Taekwondo Avatar"
+            className="w-full h-full object-contain"
+          />
+        </motion.div>
+        <span className="absolute top-1 right-2 flex h-4 w-4">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-4 w-4 bg-green-500 border-2 border-white"></span>
         </span>
       </button>
 
       {/* Chat Window */}
-      <div
+      <motion.div
+        drag
+        dragListener={false}
+        dragControls={dragControls}
+        dragMomentum={false}
         className={`fixed z-50 bottom-6 right-6 w-[90vw] md:w-[380px] bg-white rounded-2xl shadow-2xl border border-zinc-200 overflow-hidden flex flex-col transition-all duration-300 transform origin-bottom-right
         ${isOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-90 opacity-0 translate-y-8 pointer-events-none'}`}
         style={{ maxHeight: 'min(600px, 80vh)' }}
       >
         {/* Header */}
-        <div className="bg-zinc-900 p-4 flex justify-between items-center text-white">
+        <div
+          onPointerDown={(e) => dragControls.start(e)}
+          className="bg-zinc-900 p-4 flex justify-between items-center text-white cursor-move"
+        >
           <div className="flex items-center gap-3">
-            <div className="bg-primary p-2 rounded-full">
-              <Bot size={20} className="text-white" />
+            <div className="bg-white/10 p-1.5 rounded-full border border-white/10">
+              <img
+                src="/images/taekwondo_avatar.png"
+                alt="AI"
+                className="w-8 h-8 object-contain"
+              />
             </div>
             <div>
               <h3 className="font-heading font-bold tracking-wide">AI Assistant</h3>
@@ -153,6 +181,7 @@ const Chatbot: React.FC = () => {
               <RotateCcw size={18} />
             </button>
             <button
+              onPointerDown={(e) => e.stopPropagation()} // Prevent drag on close button
               onClick={() => setIsOpen(false)}
               className="text-gray-400 hover:text-white hover:bg-white/10 p-1 rounded transition-colors"
             >
@@ -238,7 +267,7 @@ const Chatbot: React.FC = () => {
             <p className="text-[10px] text-gray-400">Automated Assistant</p>
           </div>
         </div>
-      </div>
+      </motion.div>
     </>
   );
 };

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Phone } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { NAV_ITEMS, CONTACT_INFO } from '../constants';
 import WhatsAppButton from './WhatsAppButton';
 
@@ -39,8 +40,8 @@ const Navbar: React.FC = () => {
           className="flex items-center cursor-pointer group select-none active:scale-95 transition-transform duration-200"
         >
           <div className="mr-2 md:mr-4 flex items-center gap-2 md:gap-3 transition-transform duration-300 group-hover:scale-105 origin-left">
-            <img src="/images/logo.png" alt="Taekwondo Madurai" className="h-10 md:h-12 w-auto object-contain" />
-            <h1 className={`font-heading font-bold text-2xl md:text-3xl uppercase leading-none tracking-tight ${scrolled ? 'text-secondary' : 'text-white drop-shadow-md'}`}>
+            <img src="/images/logo.png" alt="Taekwondo Madurai" className="h-8 md:h-12 w-auto object-contain" />
+            <h1 className={`font-heading font-bold text-xl md:text-3xl uppercase leading-none tracking-tight ${scrolled ? 'text-secondary' : 'text-white drop-shadow-md'}`}>
               Taekwondo <span className="text-primary">Madurai</span>
             </h1>
           </div>
@@ -96,42 +97,54 @@ const Navbar: React.FC = () => {
       </div>
 
       {/* Mobile Dropdown */}
-      <div
-        className={`lg:hidden bg-white/95 backdrop-blur-xl absolute top-full left-0 w-full shadow-2xl border-t border-gray-100 transition-all duration-500 ease-in-out overflow-hidden
-        ${isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'}`}
-      >
-        <div className="flex flex-col py-6 px-6 space-y-3">
-          {NAV_ITEMS.map((item, idx) => (
-            <a
-              key={item.id}
-              href={`#${item.id}`}
-              style={{ transitionDelay: `${isOpen ? (idx + 1) * 100 : 0}ms` }}
-              onClick={() => setIsOpen(false)}
-              className={`
-                 font-heading text-2xl uppercase tracking-wide flex justify-between items-center group p-3 rounded-lg transition-all duration-500 ease-out transform active:scale-95
-                 ${isOpen ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'}
-                 ${activeSection === item.id
-                  ? 'text-primary bg-red-50 border-l-4 border-primary pl-3'
-                  : 'text-zinc-600 hover:text-primary hover:bg-gray-50 hover:pl-5'}
-              `}
-            >
-              {item.label}
-            </a>
-          ))}
-          <div
-            style={{ transitionDelay: `${isOpen ? (NAV_ITEMS.length + 1) * 100 : 0}ms` }}
-            className={`pt-6 pb-4 transform transition-all duration-500 ease-out ${isOpen ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="lg:hidden bg-white absolute top-full left-0 w-full shadow-2xl border-t border-gray-100 overflow-hidden"
           >
-            <WhatsAppButton
-              variant="primary"
-              className="w-full justify-center shadow-red-200 shadow-lg py-4 text-lg"
-              onClick={() => setIsOpen(false)}
-            >
-              Book Free Trial
-            </WhatsAppButton>
-          </div>
-        </div>
-      </div>
+            <div className="flex flex-col py-6 px-6 space-y-3">
+              {NAV_ITEMS.map((item, idx) => (
+                <motion.a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  initial={{ x: -20, opacity: 0 }}
+                  animate={{ x: 0, opacity: 1 }}
+                  exit={{ x: -20, opacity: 0 }}
+                  transition={{ delay: idx * 0.1, duration: 0.2 }}
+                  onClick={() => setIsOpen(false)}
+                  className={`
+                     font-heading text-2xl uppercase tracking-wide flex justify-between items-center group p-3 rounded-lg transition-all duration-200 ease-out transform active:scale-95
+                     ${activeSection === item.id
+                      ? 'text-primary bg-red-50 border-l-4 border-primary pl-3'
+                      : 'text-zinc-600 hover:text-primary hover:bg-gray-50 hover:pl-5'}
+                  `}
+                >
+                  {item.label}
+                </motion.a>
+              ))}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 20, opacity: 0 }}
+                transition={{ delay: NAV_ITEMS.length * 0.1 }}
+                className="pt-6 pb-4"
+              >
+                <WhatsAppButton
+                  variant="primary"
+                  className="w-full justify-center shadow-red-200 shadow-lg py-4 text-lg"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Book Free Trial
+                </WhatsAppButton>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };
